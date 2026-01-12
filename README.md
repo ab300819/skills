@@ -19,15 +19,29 @@ Claude Code Agent Skills 模板项目，包含 PRD 全流程和通用工具 skil
 | [系统设计](#2-prd-system-design-系统设计) | `/prd-system-design` | 技术架构和 API 设计 | `02-system-design*.md` |
 | [测试方案](#3-prd-test-plan-测试方案) | `/prd-test-plan` | 单元/E2E/手动测试用例 | `03-test-*.md` |
 | [开发任务](#4-prd-dev-tasks-开发任务) | `/prd-dev-tasks` | 可执行的开发任务拆分 | `04-dev-tasks*.md` |
-| [代码提交](#5-git-commit-代码提交) | `/git-commit` | Conventional Commits 规范提交 | - |
+| [项目改造](#5-prd-retrofit-项目改造) | `/prd-retrofit` | 已有项目适配 PRD 流程 | `00-retrofit-report.md` |
+| [代码提交](#6-git-commit-代码提交) | `/git-commit` | Conventional Commits 规范提交 | - |
 
 ## PRD 工作流
+
+### 新项目
 
 ```
 /prd-requirements → /prd-system-design → /prd-test-plan → /prd-dev-tasks
        │                   │                   │                 │
        ▼                   ▼                   ▼                 ▼
   需求文档             系统设计            测试方案          开发任务
+```
+
+### 已有项目改造
+
+```
+/prd-retrofit
+       │
+       ├── 自动识别已有文档
+       ├── 用户确认/手动指定
+       ├── 分析覆盖情况
+       └── 生成标准化 PRD 文档
 ```
 
 ---
@@ -528,7 +542,88 @@ feat(T-XX): <任务名称>
 
 ---
 
-# 5. git-commit (代码提交)
+# 5. prd-retrofit (项目改造)
+
+将已有工程按 PRD 流程改造，自动识别或手动指定各阶段文档。
+
+## 元数据
+
+```yaml
+name: prd-retrofit
+description: Retrofit existing projects to PRD workflow
+allowed-tools: Read, Write, Glob, Grep, AskUserQuestion, Bash
+```
+
+## 触发条件
+
+- 用户希望将现有项目适配 PRD 流程
+- 用户需要标准化项目文档
+- 用户要迁移或整理已有文档
+
+## 工作流程
+
+```
+1. 扫描项目结构
+   │
+   ▼
+2. 自动识别已有文档
+   │
+   ▼
+3. 用户确认/手动指定
+   │
+   ▼
+4. 分析文档覆盖情况
+   │
+   ▼
+5. 生成改造计划
+   │
+   ▼
+6. 逐阶段执行改造
+   │
+   ▼
+7. 生成改造报告
+```
+
+## 文档识别规则
+
+| PRD 阶段 | 识别关键词 | 常见文件名 |
+|----------|------------|------------|
+| 需求文档 | requirement, PRD, 需求, spec | `*requirement*.md`, `*prd*.md` |
+| 系统设计 | design, architecture, 设计 | `*design*.md`, `*architecture*.md` |
+| 测试方案 | test, QA, 测试 | `*test*.md`, `*qa*.md` |
+| 开发任务 | task, todo, 任务 | `*task*.md`, `*todo*.md` |
+
+## 改造模式
+
+| 模式 | 说明 |
+|------|------|
+| **完整改造** | 按 PRD 模板重新生成所有文档 |
+| **增量补充** | 保留原有内容，仅补充缺失部分 |
+| **仅标准化** | 保留内容，调整格式和结构 |
+
+## 输出文件
+
+```
+docs/prd/
+├── 00-retrofit-report.md    # 改造报告
+├── 01-requirements.md       # 需求文档（新建或补充）
+├── 02-system-design.md      # 系统设计（新建或补充）
+├── 03-test-plan.md          # 测试方案（新建或补充）
+└── 04-dev-tasks.md          # 开发任务（新建或补充）
+```
+
+## 约束
+
+- [ ] 必须扫描常见文档目录
+- [ ] 识别结果必须让用户确认
+- [ ] 支持用户手动指定/修正
+- [ ] **不得删除原有文档的有效内容**
+- [ ] 缺失内容标注 `[待补充]`
+- [ ] 必须生成改造报告
+
+---
+
+# 6. git-commit (代码提交)
 
 使用 Conventional Commits 规范创建标准化的 git 提交。
 
@@ -712,6 +807,8 @@ skills/
 │       └── regression-template.md
 ├── prd-dev-tasks/
 │   └── SKILL.md
+├── prd-retrofit/
+│   └── SKILL.md
 └── git-commit/
     └── SKILL.md
 ```
@@ -735,6 +832,7 @@ skills/
 /prd-system-design
 /prd-test-plan
 /prd-dev-tasks
+/prd-retrofit
 /git-commit
 ```
 
@@ -745,5 +843,6 @@ skills/
 设计一下系统架构
 写测试用例
 拆分开发任务
+把这个项目按 PRD 流程改造一下
 提交代码
 ```
